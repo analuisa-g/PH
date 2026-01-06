@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PH</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- CHUVA -->
+    <div class="rain"></div>
+
+    <!-- CONTROLES -->
+    <button id="music-btn">▶</button>
+
+    <div id="music-controls">
+        <input id="volume" type="range" min="0" max="1" step="0.01">
+    </div>
+
+    <!-- ÁUDIO -->
+    <audio id="bg-music" loop>
+        <source src="audio/andy-timmons-ascension.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- SCRIPT -->
+    <script>
+        const music = document.getElementById("bg-music");
+        const button = document.getElementById("music-btn");
+        const volumeControl = document.getElementById("volume");
+
+        // recuperar estado salvo
+        const savedVolume = localStorage.getItem("musicVolume");
+        const savedState = localStorage.getItem("musicState");
+
+        music.volume = savedVolume !== null ? savedVolume : 0.3;
+        volumeControl.value = music.volume;
+
+        if (savedState === "playing") {
+            music.play().catch(() => { });
+            button.textContent = "⏸";
+            button.classList.add("playing");
+        }
+
+        // play / pause
+        button.addEventListener("click", () => {
+            if (music.paused) {
+                music.play();
+                button.textContent = "⏸";
+                button.classList.add("playing");
+                localStorage.setItem("musicState", "playing");
+            } else {
+                music.pause();
+                button.textContent = "▶";
+                button.classList.remove("playing");
+                localStorage.setItem("musicState", "paused");
+            }
+        });
+
+        // volume
+        volumeControl.addEventListener("input", () => {
+            music.volume = volumeControl.value;
+            localStorage.setItem("musicVolume", music.volume);
+        });
+    </script>
+
+</body>
+
+</html>
